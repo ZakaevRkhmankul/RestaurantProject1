@@ -1,11 +1,12 @@
-package peaksoft.dto;
+package peaksoft.dto.request;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
-import peaksoft.entities.Restaurant;
+import peaksoft.enums.RestType;
+
 
 @Getter
 @Setter
@@ -14,10 +15,9 @@ import peaksoft.entities.Restaurant;
 public class RestaurantRequest {
     String name;
     String location;
-    String restType;
+    RestType restType;
     int numberOfEmployees;
     String service;
 
-    public RestaurantRequest(Restaurant restaurant) {
-    }
+
 }

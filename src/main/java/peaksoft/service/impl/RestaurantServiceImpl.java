@@ -1,18 +1,20 @@
-package peaksoft.service;
+package peaksoft.service.impl;
 
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import peaksoft.dto.request.RestaurantRequest;
 import peaksoft.dto.responses.RestaurantResponse;
+import peaksoft.dto.responses.SimpleResponse;
 import peaksoft.entities.Restaurant;
 import peaksoft.repository.RestaurantRepo;
+import peaksoft.service.RestaurantService;
 
 import java.util.List;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
-
     private final RestaurantRepo restaurantRepo;
 
     @Autowired
@@ -22,8 +24,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
 
     @Override
-    public RestaurantRequest createRestaurant(RestaurantRequest restaurantRequest) {
-        
+    public SimpleResponse createRestaurant(RestaurantRequest restaurantRequest) {
         Restaurant restaurant = new Restaurant();
         restaurant.setName(restaurantRequest.getName());
         restaurant.setLocation(restaurantRequest.getLocation());
@@ -31,7 +32,12 @@ public class RestaurantServiceImpl implements RestaurantService {
         restaurant.setNumberOfEmployees(restaurantRequest.getNumberOfEmployees());
         restaurant.setService(restaurantRequest.getService());
         restaurantRepo.save(restaurant);
-        return restaurantRequest;
+
+        return SimpleResponse
+                .builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Success")
+                .build();
     }
 
 
@@ -47,10 +53,8 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantResponse updateRestaurant(Long id, RestaurantRequest restaurantRequest) {
-
         Restaurant restaurant = restaurantRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant with id " + id + " not found"));
-
 
         if (restaurantRequest.getName() != null)
             restaurant.setName(restaurantRequest.getName());
@@ -75,11 +79,15 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public String deleteRestaurant(Long id) {
+    public SimpleResponse deleteRestaurant(Long id) {
         Restaurant restaurant = restaurantRepo.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Restaurant with id " + id + " not found"));
         restaurantRepo.delete(restaurant);
-        return "Restaurant with id " + id + " was deleted";
+        return SimpleResponse
+                .builder()
+                .httpStatus(HttpStatus.OK)
+                .message("Success")
+                .build();
     }
 
 }
